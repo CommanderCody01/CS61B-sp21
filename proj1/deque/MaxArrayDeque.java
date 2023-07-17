@@ -22,7 +22,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
                 maxIndex = curr;
             }
             curr = nextIndex(curr);
-            count -= 1;
+            count += 1;
         }
         return this.get(maxIndex);
     }
@@ -40,7 +40,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
                 maxIndex = curr;
             }
             curr = nextIndex(curr);
-            count -= 1;
+            count += 1;
         }
         return this.get(maxIndex);
     }
