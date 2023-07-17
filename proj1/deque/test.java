@@ -27,9 +27,9 @@ public class test {
 //            System.out.println((double) lld1.removeFirst());
 //        }
 
-//        for (int x : lld1) {
-//            System.out.println(x);
-//        }
+        for (int x : lld1) {
+            System.out.println(x);
+        }
 
 
 
