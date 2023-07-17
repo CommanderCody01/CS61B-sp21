@@ -1,6 +1,6 @@
 package deque;
 
-public class test {
+public class Test {
     public static void main(String[] args) {
         LinkedListDeque<Integer> lst = new LinkedListDeque<Integer>();
         lst.addFirst(10);
