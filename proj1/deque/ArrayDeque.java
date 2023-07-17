@@ -1,6 +1,8 @@
 package deque;
 
-public class ArrayDeque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque<T> implements Iterable<T>, Deque<T>{
 
     private T[] data;
     private int size;
@@ -29,7 +31,16 @@ public class ArrayDeque<T> {
     public void updateBackIndex() {
         backIndex = (frontIndex + size) % data.length;
     }
-    public void resize(int newSize) {        // resize完之后 frontIndex = 0;
+
+    public int getFrontIndex() {
+        return frontIndex;
+    }
+
+    public int nextIndex(int curr) {
+        return (curr + 1 + data.length) % data.length;
+    }
+
+    private void resize(int newSize) {        // resize完之后 frontIndex = 0;
         T[] a = (T[]) new Object[newSize];
         int start = frontIndex;
         int count = 0;
@@ -49,6 +60,7 @@ public class ArrayDeque<T> {
         backIndex = frontIndex + size -1;
 
     }
+    @Override
     public void addFirst(T item) {
         if (data.length == size) {     // array 满了
             resize(size * 2);
@@ -70,6 +82,7 @@ public class ArrayDeque<T> {
             backIndex = (frontIndex + size -1) % data.length;
         }
     }
+    @Override
     public void addLast(T item) {
         if (data.length == size) {
             resize(size * 2);
@@ -90,15 +103,18 @@ public class ArrayDeque<T> {
             size += 1;
         }
     }
-    public boolean isEmpty() {
-        return size == 0;
-    }
+//    @Override
+//    public boolean isEmpty() {
+//        return size == 0;
+//    }
+    @Override
     public int size() {
         return size;
     }
+    @Override
     public void printDeque() {
         int start = frontIndex;
-        while (start != backIndex) {
+        while (start != backIndex) {           // 也可以用size来track
             System.out.print(data[start] + " ");
             start = (start + data.length + 1)% data.length;
         }
@@ -109,6 +125,7 @@ public class ArrayDeque<T> {
 //        }
         System.out.println();
     }
+    @Override
     public T removeFirst() {
 //        return data[0];
         if (size == 0) {
@@ -139,6 +156,7 @@ public class ArrayDeque<T> {
 
 
     }
+    @Override
     public T removeLast() {
         if (size == 0) {
             return null;
@@ -167,11 +185,59 @@ public class ArrayDeque<T> {
             return item;
         }
     }
+    @Override
     public T get(int index) {
         int realIndex = (frontIndex + index) % data.length;
         return data[realIndex];
     }
 
+    public Iterator<T> iterator() {
+        return new ArrayListDequeIterator();
+    }
+
+    private class ArrayListDequeIterator implements Iterator<T> {
+        private int count;
+        private int start;
+
+        public ArrayListDequeIterator() {
+            count = 0;
+            start = frontIndex;
+        }
+        @Override
+        public boolean hasNext() {
+            return count != size;
+        }
+        @Override
+        public T next() {
+            T item = data[start];
+            start = (start + data.length + 1) % data.length;
+            count += 1;
+            return item;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof ArrayDeque other) {
+            if (this.size != other.size) {
+                return false;
+            }
+            int thisStart = this.frontIndex;
+            int otherStart = other.frontIndex;
+            for (int i = 0; i < this.size; ++i) {
+                if ( !(this.data[thisStart].equals(other.data[otherStart])) ) {
+                    return false;
+                }
+                thisStart = (thisStart + 1 + this.data.length) % this.data.length;
+                otherStart = (otherStart + 1 + other.data.length) % other.data.length;
+            }
+            return true;
+        }
+        return false;
+    }
 
 
 }

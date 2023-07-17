@@ -1,6 +1,6 @@
 package deque;
-
-public class LinkedListDeque<T> {
+import java.util.Iterator;
+public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     private Node sentinel;
     private int size;
 
@@ -23,14 +23,15 @@ public class LinkedListDeque<T> {
         sentinel = new Node(null);
         size = 0;
     }
-
+    @Override
     public int size() {
         return size;
     }
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
+//    @Override
+//    public boolean isEmpty() {
+//        return size() == 0;
+//    }
+    @Override
     public void addFirst(T item) {
         if (size == 0) {              //  第一个既是first 也是last
             Node newNode = new Node(item);
@@ -49,7 +50,7 @@ public class LinkedListDeque<T> {
         }
         size += 1;
     }
-
+    @Override
     public void addLast(T item) {
         if (size == 0) {
             Node newNode = new Node(item);
@@ -68,7 +69,7 @@ public class LinkedListDeque<T> {
         }
         size += 1;
     }
-
+    @Override
     public T get(int index) {        // first = index 0
         if (size == 0) {
             return null;
@@ -88,13 +89,14 @@ public class LinkedListDeque<T> {
         }
         return helper(n.next,index-1);
     }
+
     public T getRecursive(int index) {
         if (size == 0) {
             return null;
         }
         return helper(sentinel.next, index);          // 把first node 和 index传进去
     }
-
+    @Override
     public T removeFirst() {          //别忘更新size
         if (size == 0) {
             return null;
@@ -123,6 +125,7 @@ public class LinkedListDeque<T> {
 
     }
 
+    @Override
     public T removeLast() {         // 别忘update size
         if (size == 0) {
             return null;
@@ -159,6 +162,7 @@ public class LinkedListDeque<T> {
 
     }
 
+    @Override
     public void printDeque() {
         if (size != 0) {
             for (Node curr = sentinel.next; curr != sentinel; curr = curr.next ) {
@@ -168,12 +172,49 @@ public class LinkedListDeque<T> {
         }
     }
 
-//    public Iterator<T> iterator() {
-//
-//    }
-//
-//    public boolean equals(Object o) {
-//
-//    }
+    public Iterator<T> iterator() {
+        return new LinkedListDequeIterator();
+    }
+
+    private class LinkedListDequeIterator implements Iterator<T> {
+        private Node curr;
+        public LinkedListDequeIterator() {
+            curr = sentinel.next;
+        }
+        @Override
+        public boolean hasNext() {
+            return (curr != null && curr != sentinel);           // 如果curr是null或者curr.next是sentinel说明到头了
+        }
+
+        @Override
+        public T next() {
+            T data = curr.item;
+            curr = curr.next;
+            return data;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o instanceof LinkedListDeque other) {
+            if (this.size != other.size) {
+                return false;
+            }
+            Node curr = this.sentinel.next;
+            Node otherCurr = other.sentinel.next;
+            int count = 0;
+            while (count < size) {
+                if ( !(curr.item.equals(otherCurr.item)) ) {
+                    return false;
+                }
+                count += 1;
+            }
+            return true;
+        }
+        return false;
+    }
 
 }
