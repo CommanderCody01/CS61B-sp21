@@ -15,10 +15,10 @@ import static capers.Utils.*;
  */
 public class CapersRepository {
     /** Current Working Directory. */
-    static final File CWD = new File(System.getProperty("user.dir"));
+    static final File CWD = new File(System.getProperty("user.dir"));   // absolute path of pwd
 
     /** Main metadata folder. */
-    static final File CAPERS_FOLDER = null; // TODO Hint: look at the `join`
+    static final File CAPERS_FOLDER = Utils.join(CWD, ".capers" ); // TODO Hint: look at the `join`
                                             //      function in Utils
 
     /**
@@ -32,6 +32,8 @@ public class CapersRepository {
      */
     public static void setupPersistence() {
         // TODO
+        CAPERS_FOLDER.mkdir();
+        Dog.DOG_FOLDER.mkdir();
     }
 
     /**
@@ -41,6 +43,22 @@ public class CapersRepository {
      */
     public static void writeStory(String text) {
         // TODO
+        File f = new File("./.capers/story.txt");
+//        File f = join(CAPERS_FOLDER, "story");
+//        Boolean flag = f.createNewFile();
+        Boolean flag = f.exists();
+        String output;
+        if (flag) {      // file exist
+            String old = Utils.readContentsAsString(f);
+            output = old + "\n" + text;
+            Utils.writeContents(f, output);
+        }
+        else {
+            output = text;
+            Utils.writeContents(f, output);
+        }
+        System.out.println(output);
+        System.out.println();
     }
 
     /**
@@ -50,6 +68,9 @@ public class CapersRepository {
      */
     public static void makeDog(String name, String breed, int age) {
         // TODO
+        Dog dog = new Dog(name, breed, age);
+        dog.saveDog();
+        System.out.println(dog.toString());
     }
 
     /**
@@ -60,5 +81,9 @@ public class CapersRepository {
      */
     public static void celebrateBirthday(String name) {
         // TODO
+        File f = Utils.join(Dog.DOG_FOLDER, name);
+        Dog dog = Utils.readObject(f, Dog.class);
+        dog.haveBirthday();
+        dog.saveDog();
     }
 }
