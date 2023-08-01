@@ -1,9 +1,6 @@
 package hashmap;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 /**
  *  A hash table-backed Map implementation. Provides amortized constant time
@@ -212,23 +209,68 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public Set<K> keySet() {
-        return null;
+        Set<K> ret = new HashSet<>();
+        for (int i = 0; i < buckets.length; ++i) {
+            for (Node ele : buckets[i]) {
+                ret.add(ele.key);
+            }
+        }
+        return ret;
     }
+
 
     @Override
     public V remove(K key) {
+        Node rmv = find(key);
+        if (rmv != null) {
+            int index = Math.floorMod(key.hashCode(), numBuckets);
+            buckets[index].remove(rmv);
+            return rmv.value;
+        }
         return null;
     }
 
     @Override
     public V remove(K key, V value) {
+        Node rmv = find(key);
+        if (rmv != null) {
+            int index = Math.floorMod(key.hashCode(), numBuckets);
+            buckets[index].remove(rmv);
+            return rmv.value;
+        }
         return null;
     }
 
     @Override
     public Iterator<K> iterator() {
-        return null;
+        return new HPiterator();
     }
 
+    private class HPiterator implements Iterator<K> {
+        int index;
+        K[] data;
+        public HPiterator() {
+            index = 0;
+            data = (K[]) new Object[size()];
+            int count = 0;
+            for (int i = 0; i < buckets.length; ++i) {
+                for (Node ele : buckets[i]) {
+                    data[count] = ele.key;
+                }
+            }
+
+        }
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public K next() {
+            K val = data[index];
+            index += 1;
+            return val;
+        }
+    }
 
 }
